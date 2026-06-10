@@ -59,6 +59,7 @@ img { display: block; width: 100%; }
   font-weight: 700;
   letter-spacing: -.05em;
 }
+.logo-image { width: 62px; height: 62px; object-fit: contain; }
 .logo-mark {
   position: relative;
   width: 34px;
@@ -83,6 +84,8 @@ img { display: block; width: 100%; }
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .bag {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 42px;
   height: 42px;
   color: var(--espresso);
@@ -90,6 +93,9 @@ img { display: block; width: 100%; }
   border: 1px solid var(--line);
   border-radius: 50%;
   cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 .bag-count {
   position: absolute;
@@ -202,6 +208,16 @@ h1 {
   line-height: 1.65;
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 18px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+.hero-proof span { color: var(--muted); }
 .hero-media {
   position: relative;
   min-height: 390px;
@@ -289,8 +305,11 @@ h1 {
 .food-card-copy { padding: 18px; }
 .food-card-title { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
 .food-card h3 { margin-bottom: 6px; font-size: 22px; letter-spacing: -.03em; }
+.served-with { color: var(--orange-dark); font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 .food-card p { min-height: 44px; margin: 0 0 17px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .add-btn {
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
   flex: 0 0 auto;
@@ -301,6 +320,7 @@ h1 {
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
+  font-size: 17px;
 }
 
 .story {
@@ -349,6 +369,15 @@ h1 {
 .menu-item h3 { margin: 0; font-size: 18px; letter-spacing: -.02em; }
 .menu-item p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .menu-price { font-weight: 700; }
+.text-link {
+  display: inline-block;
+  margin-top: 17px;
+  color: var(--orange-dark);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .menu-flags { display: flex; gap: 5px; margin-top: 8px; }
 .menu-flags span { padding: 3px 6px; color: var(--orange-dark); background: #f8e8db; border-radius: 3px; font-size: 8px; font-weight: 700; text-transform: uppercase; }
 
@@ -362,6 +391,7 @@ h1 {
 .catering h2 { max-width: 670px; }
 .catering .eyebrow { color: #f4a47c; }
 .catering .section-lead { color: #d7c8bf; }
+.catering-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
 .catering-cards { display: grid; gap: 12px; }
 .catering-card {
   padding: 22px;
@@ -382,6 +412,8 @@ h1 {
 .location-card .status { color: #4d6d39; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .location-card h3 { margin: 10px 0 8px; font-size: 28px; }
 .location-card p { color: var(--muted); font-size: 13px; line-height: 1.55; }
+.location-card address { color: var(--muted); font-size: 13px; font-style: normal; line-height: 1.55; }
+.location-card .location-note { padding: 14px; background: var(--cream); border-radius: 10px; }
 .location-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; padding: 16px 0; border-block: 1px solid var(--line); }
 .location-meta small { display: block; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .location-meta strong { font-size: 12px; }
@@ -412,6 +444,32 @@ h1 {
   transform: translate(-50%, -70%) rotate(-45deg);
 }
 .map-pin span { transform: rotate(45deg); }
+.wayfinding {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 420px;
+  padding: 28px;
+  color: var(--paper);
+  background: var(--brown);
+  border-radius: 20px;
+}
+.wayfinding-top span {
+  display: block;
+  margin-bottom: 8px;
+  color: #eeb091;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.wayfinding-top strong { max-width: 440px; font-family: var(--serif); font-size: clamp(32px, 6vw, 58px); line-height: 1; letter-spacing: -.045em; }
+.wayfinding ol { display: grid; gap: 0; margin: 30px 0; padding: 0; list-style: none; }
+.wayfinding li { display: grid; grid-template-columns: 34px 1fr; gap: 13px; padding: 15px 0; border-top: 1px solid rgba(255,255,255,.16); }
+.wayfinding li > span { display: grid; place-items: center; width: 27px; height: 27px; color: var(--espresso); background: var(--orange); border-radius: 50%; font-size: 11px; font-weight: 700; }
+.wayfinding li strong { display: block; margin-bottom: 3px; font-size: 12px; }
+.wayfinding li small { color: #d9c9bd; font-size: 10px; line-height: 1.4; }
+.wayfinding > a { color: #f3bea4; font-size: 11px; font-weight: 700; }
 
 .footer {
   display: grid;
@@ -421,7 +479,11 @@ h1 {
   background: var(--brown);
 }
 .footer .logo { font-size: 26px; }
+.footer .footer-logo { width: 96px; height: 96px; }
 .footer p { max-width: 340px; color: #d9c9bd; font-size: 12px; line-height: 1.6; }
+.footer-contact { display: grid; align-content: start; gap: 10px; }
+.footer-contact strong { font-family: var(--serif); font-size: 16px; }
+.footer-contact a { color: #e9ded6; font-size: 12px; line-height: 1.5; }
 .footer-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .footer-links a { color: #e9ded6; font-size: 12px; }
 .footer-bottom { padding-top: 20px; border-top: 1px solid rgba(255,255,255,.15); color: #c8b7ad; font-size: 10px; }
@@ -493,6 +555,6 @@ h1 {
   .catering-cards { grid-template-columns: 1fr; }
   .location-grid { grid-template-columns: .7fr 1.3fr; }
   .map { min-height: 500px; }
-  .footer { grid-template-columns: 1.2fr 1fr; padding: 70px 6vw 34px; }
+  .footer { grid-template-columns: 1.2fr .8fr 1fr; padding: 70px 6vw 34px; }
   .footer-bottom { grid-column: 1 / -1; }
 }
