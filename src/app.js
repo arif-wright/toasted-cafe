@@ -1,11 +1,14 @@
 import "./styles.css";
-import { categories, featuredIds, menuItems, popularIds } from "./menu-data.js";
 import { money, renderCartLine, renderFeatured, renderMenu, renderModifierGroup } from "./components.js";
+import { business } from "./config/business.js";
+import { loadCart, saveCart } from "./services/cart-service.js";
+import { getMenuCatalog } from "./services/menu-service.js";
+import { beginCheckout } from "./services/ordering-service.js";
 
-const ORDER_URL = "https://order.chownow.com/order/43600/locations?add_cn_ordering_class=true";
-const PHONE_URL = "tel:+12102549159";
-const DIRECTIONS_URL = "https://www.google.com/maps/dir/?api=1&destination=1777+Northeast+Loop+410+G20+San+Antonio+TX+78217";
-const CONTACT_URL = "https://toastedcafesa.com/contact";
+const { categories, featuredIds, items: menuItems, popularIds } = await getMenuCatalog();
+const PHONE_URL = business.phoneHref;
+const DIRECTIONS_URL = business.directionsUrl;
+const CONTACT_URL = business.contactUrl;
 const page = location.pathname.split("/").filter(Boolean)[0] || "home";
 const featured = featuredIds.map(id => menuItems.find(item => item.id === id));
 let cart = loadCart();
@@ -19,13 +22,13 @@ const pageContent = {
       <div class="hero-copy"><p class="eyebrow">Sandwiches · burgers · wraps · coffee</p><h1>Your lunch break, <span class="accent">toasted.</span></h1><p>Handcrafted comfort food, built your way and ready for quick pickup from the Northwest Tower basement.</p><div class="hero-actions"><a class="btn btn-orange" href="/menu/">Order lunch</a><a class="btn btn-quiet" href="/location/">Pickup details <span>→</span></a></div><div class="hero-proof"><strong>Open weekdays from 7am</strong><span>Basement level · Northwest Tower</span></div></div>
       <div class="hero-media"><img src="https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=1400&q=90" alt="Fresh stacked lunch sandwich"><div class="hero-badge">Made fresh for your lunch break</div></div>
     </section>
-    <section class="quick-order"><div class="quick-title"><span>01</span><div><strong>Lunch without the guesswork.</strong><small>Choose your sandwich, side, drink, and every little detail.</small></div></div><div class="order-options"><div class="order-option active"><span>+</span><span><b>Build it your way</b><small>Customize on the Toasted site</small></span></div><div class="order-option"><span>↗</span><span><b>Secure checkout</b><small>ChowNow handles the final step</small></span></div></div><a class="btn btn-light" href="/menu/">Start your order</a></section>
+    <section class="quick-order"><div class="quick-title"><span>01</span><div><strong>Lunch without the guesswork.</strong><small>Choose your sandwich, side, drink, and every little detail.</small></div></div><div class="order-options"><div class="order-option active"><span>+</span><span><b>Build it your way</b><small>Customize on the Toasted site</small></span></div><div class="order-option"><span>↗</span><span><b>POS-connected checkout</b><small>Confirm pickup and payment securely</small></span></div></div><a class="btn btn-light" href="/menu/">Start your order</a></section>
     <section class="section" id="favorites"><div class="section-head"><div><p class="eyebrow">Most ordered</p><h2>Start with the<br>heavy hitters.</h2></div><div><p class="section-lead">Three Toasted favorites, ready for your choice of side and whatever the afternoon calls for.</p><a class="text-link" href="/menu/">Explore the full menu →</a></div></div><div class="favorite-grid">${renderFeatured(featured)}</div></section>
     <section class="story"><div class="story-image"><img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=85" alt="Cafe counter ready for weekday lunch service" loading="lazy"></div><div class="story-copy"><p class="eyebrow">Built for the workday</p><h2>Real lunch, right downstairs.</h2><p>Toasted Cafe is the Northwest Tower's basement-level lunch spot, serving fresh sandwiches, cheesesteaks, burgers, wraps, salads, sides, and coffee made to order.</p><a class="btn btn-outline" href="/location/">See how to find us</a><div class="stats"><div class="stat"><strong>7am</strong><span>Open weekdays</span></div><div class="stat"><strong>G20</strong><span>Basement level</span></div><div class="stat"><strong>Fresh</strong><span>Made to order</span></div></div></div></section>
     <section class="section home-catering"><div class="section-head"><div><p class="eyebrow">Feed the whole floor</p><h2>Office lunch,<br>handled.</h2></div><div><p class="section-lead">Sandwich trays, boxed lunches, breakfast, and coffee for nearby teams and meetings.</p><a class="btn btn-orange" href="/catering/">Explore catering</a></div></div></section>`,
   menu: `
     <section class="page-hero menu-page-hero"><div><p class="eyebrow">Made your way</p><h1>Order lunch.</h1><p>Choose a favorite, pick your side, and add every detail. Your bag stays with you across the Toasted site.</p></div><img src="https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=1200&q=85" alt="Toasted sandwich ready for lunch"></section>
-    <section class="section menu-section page-menu" id="menu"><div class="section-head"><div><p class="eyebrow">The full menu</p><h2>What are you<br>having?</h2></div><div><p class="section-lead">Live availability and final pricing are confirmed at secure checkout.</p><span class="prototype-note"><span>✓</span> Preview menu · final details confirmed at checkout</span></div></div><div class="menu-browser"><label class="menu-search"><span>⌕</span><input type="search" placeholder="Search sandwiches, coffee, sides..." aria-label="Search menu"><button class="clear-search" type="button" aria-label="Clear search">×</button></label><div class="category-tabs" role="tablist">${categories.map(category => `<button class="category-tab ${menuBrowse.category === category ? "active" : ""}" data-category="${category}"><span>${category}</span><small>${categoryCount(category)}</small></button>`).join("")}</div></div><div class="menu-results-head"><strong class="menu-results-title"></strong><span class="menu-results-count"></span></div><div class="menu-list"></div><div class="menu-empty" hidden><h3>Nothing toasted under that name.</h3><p>Try another search or browse a category.</p><button class="btn btn-outline reset-menu">Show popular items</button></div></section>`,
+    <section class="section menu-section page-menu" id="menu"><div class="section-head"><div><p class="eyebrow">The full menu</p><h2>What are you<br>having?</h2></div><div><p class="section-lead">Build your pickup order here. Live availability, timing, and final pricing are confirmed at secure checkout.</p><span class="menu-status-note"><span>✓</span> Online ordering · pickup from Suite G20</span></div></div><div class="menu-browser"><label class="menu-search"><span>⌕</span><input type="search" placeholder="Search sandwiches, coffee, sides..." aria-label="Search menu"><button class="clear-search" type="button" aria-label="Clear search">×</button></label><div class="category-tabs" role="tablist">${categories.map(category => `<button class="category-tab ${menuBrowse.category === category ? "active" : ""}" data-category="${category}"><span>${category}</span><small>${categoryCount(category)}</small></button>`).join("")}</div></div><div class="menu-results-head"><strong class="menu-results-title"></strong><span class="menu-results-count"></span></div><div class="menu-list"></div><div class="menu-empty" hidden><h3>Nothing toasted under that name.</h3><p>Try another search or browse a category.</p><button class="btn btn-outline reset-menu">Show popular items</button></div></section>`,
   catering: `
     <section class="page-hero catering-page-hero"><div><p class="eyebrow">Office catering · San Antonio</p><h1>Feed the whole floor.</h1><p>Fresh, crowd-friendly lunches for team meetings, client days, trainings, and the days nobody remembered to pack lunch.</p><div class="hero-actions"><a class="btn btn-orange" href="${PHONE_URL}">Call about catering</a><a class="btn btn-quiet" href="${CONTACT_URL}" target="_blank" rel="noopener">Send an inquiry <span>→</span></a></div></div><img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=85" alt="Catered team lunch"></section>
     <section class="section catering-detail"><div class="section-head"><div><p class="eyebrow">Made for meetings</p><h2>Simple to order.<br>Easy to serve.</h2></div><p class="section-lead">Tell us your headcount, timing, and what the room needs. We'll help shape a practical spread for your workday.</p></div><div class="service-grid"><article><span>01</span><h3>Sandwich trays</h3><p>A shareable mix of Toasted favorites, cut and ready for the conference table.</p></article><article><span>02</span><h3>Boxed lunches</h3><p>Individual lunches that make headcounts, dietary needs, and cleanup straightforward.</p></article><article><span>03</span><h3>Breakfast & coffee</h3><p>A warm start for early meetings, training days, and morning teams.</p></article></div></section>
@@ -98,7 +101,7 @@ function addActiveItem(event) {
   if (required.some(group => !selections[group.id])) return notify("Please complete the required choices");
   const unitTotal = activeItem.price + Object.values(selections).reduce((sum, option) => sum + option.price, 0);
   cart.push({ lineId: crypto.randomUUID(), item: activeItem, selections, notes: event.currentTarget.notes.value, quantity, unitTotal, total: unitTotal * quantity });
-  saveCart();
+  saveCart(cart);
   closePanels();
   updateCart();
   notify(`${activeItem.name} added to your bag`);
@@ -108,20 +111,32 @@ function updateCart() {
   const subtotal = cart.reduce((sum, line) => sum + line.total, 0);
   document.querySelector(".bag-count").textContent = count;
   document.querySelector(".cart-lines").innerHTML = cart.length ? cart.map(renderCartLine).join("") : `<div class="empty-cart"><img src="/toasted-cafe-logo.png" alt=""><h3>Your bag is hungry.</h3><p>Build a lunch from the Toasted menu.</p><a class="btn btn-orange" href="/menu/">Browse menu</a></div>`;
-  document.querySelector(".cart-footer").innerHTML = cart.length ? `<div class="pickup-summary"><span>Pickup from</span><strong>Northwest Tower · Suite G20</strong></div><div class="cart-totals"><span>Estimated subtotal</span><strong>${money(subtotal)}</strong></div><p class="handoff-note"><strong>Secure checkout with ChowNow</strong>Live availability, final pricing, pickup time, and payment are confirmed next.</p><a class="btn btn-orange checkout-button" href="${ORDER_URL}" target="_blank" rel="noopener"><span>Continue to secure checkout</span><span>↗</span></a>` : "";
+  document.querySelector(".cart-footer").innerHTML = cart.length ? `<div class="pickup-summary"><span>Pickup from</span><strong>${business.pickupLabel}</strong></div><div class="cart-totals"><span>Estimated subtotal</span><strong>${money(subtotal)}</strong></div><p class="handoff-note"><strong>POS-connected secure checkout</strong>Live availability, final pricing, pickup time, and payment are confirmed next.</p><button class="btn btn-orange checkout-button"><span>Continue to secure checkout</span><span>↗</span></button>` : "";
   const bar = document.querySelector(".mobile-order-bar");
   bar.classList.toggle("has-items", count > 0);
   if (count) bar.innerHTML = `<span>View bag · ${count} item${count === 1 ? "" : "s"}</span><strong>${money(subtotal)}</strong>`;
   bindCartEvents();
 }
 function bindCartEvents() {
-  document.querySelectorAll("[data-qty]").forEach(button => button.addEventListener("click", () => { const line = cart.find(entry => entry.lineId === button.dataset.lineId); line.quantity += Number(button.dataset.qty); if (line.quantity <= 0) cart = cart.filter(entry => entry.lineId !== line.lineId); else line.total = line.unitTotal * line.quantity; saveCart(); updateCart(); }));
-  document.querySelectorAll(".remove-line").forEach(button => button.addEventListener("click", () => { cart = cart.filter(line => line.lineId !== button.dataset.lineId); saveCart(); updateCart(); }));
+  document.querySelectorAll("[data-qty]").forEach(button => button.addEventListener("click", () => { const line = cart.find(entry => entry.lineId === button.dataset.lineId); line.quantity += Number(button.dataset.qty); if (line.quantity <= 0) cart = cart.filter(entry => entry.lineId !== line.lineId); else line.total = line.unitTotal * line.quantity; saveCart(cart); updateCart(); }));
+  document.querySelectorAll(".remove-line").forEach(button => button.addEventListener("click", () => { cart = cart.filter(line => line.lineId !== button.dataset.lineId); saveCart(cart); updateCart(); }));
+  document.querySelector(".checkout-button")?.addEventListener("click", handleCheckout);
 }
-function loadCart() {
-  try { return JSON.parse(localStorage.getItem("toasted-cart")) || []; } catch { return []; }
+async function handleCheckout(event) {
+  const button = event.currentTarget;
+  button.disabled = true;
+  button.querySelector("span:first-child").textContent = "Preparing secure checkout...";
+  const result = await beginCheckout(cart);
+
+  if (result.status === "ready") {
+    location.assign(result.checkoutUrl);
+    return;
+  }
+
+  button.disabled = false;
+  button.querySelector("span:first-child").textContent = "Continue to secure checkout";
+  notify("Online checkout is being connected. Call Toasted to place your order today.");
 }
-function saveCart() { localStorage.setItem("toasted-cart", JSON.stringify(cart)); }
 function categoryCount(category) {
   return category === "Popular" ? popularIds.length : menuItems.filter(item => item.category === category).length;
 }
