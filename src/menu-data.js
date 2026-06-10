@@ -1,5 +1,5 @@
 export const categories = [
-  "All",
+  "Popular",
   "Hot Sandwiches",
   "Cold Sandwiches",
   "Salads",
@@ -8,6 +8,17 @@ export const categories = [
   "Sweet Tooth",
   "Coffee",
   "Beverages"
+];
+
+export const popularIds = [
+  "classic-cheesesteak",
+  "banh-mi-chicken",
+  "fried-chicken",
+  "american-burger",
+  "el-camino",
+  "chicken-caesar-salad",
+  "latte",
+  "breakfast-tacos"
 ];
 
 const sideGroup = {

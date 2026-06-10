@@ -1,5 +1,5 @@
 import "./styles.css";
-import { categories, featuredIds, menuItems } from "./menu-data.js";
+import { categories, featuredIds, menuItems, popularIds } from "./menu-data.js";
 import { money, renderCartLine, renderFeatured, renderMenu, renderModifierGroup } from "./components.js";
 
 const ORDER_URL = "https://order.chownow.com/order/43600/locations?add_cn_ordering_class=true";
@@ -11,6 +11,7 @@ const featured = featuredIds.map(id => menuItems.find(item => item.id === id));
 let cart = loadCart();
 let activeItem = null;
 let quantity = 1;
+let menuBrowse = loadMenuBrowse();
 
 const pageContent = {
   home: `
@@ -24,7 +25,7 @@ const pageContent = {
     <section class="section home-catering"><div class="section-head"><div><p class="eyebrow">Feed the whole floor</p><h2>Office lunch,<br>handled.</h2></div><div><p class="section-lead">Sandwich trays, boxed lunches, breakfast, and coffee for nearby teams and meetings.</p><a class="btn btn-orange" href="/catering/">Explore catering</a></div></div></section>`,
   menu: `
     <section class="page-hero menu-page-hero"><div><p class="eyebrow">Made your way</p><h1>Order lunch.</h1><p>Choose a favorite, pick your side, and add every detail. Your bag stays with you across the Toasted site.</p></div><img src="https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=1200&q=85" alt="Toasted sandwich ready for lunch"></section>
-    <section class="section menu-section page-menu" id="menu"><div class="section-head"><div><p class="eyebrow">The full menu</p><h2>What are you<br>having?</h2></div><div><p class="section-lead">Live availability and final pricing are confirmed at secure checkout.</p><span class="prototype-note"><span>✓</span> Preview menu · final details confirmed at checkout</span></div></div><div class="category-tabs" role="tablist">${categories.map((category, index) => `<button class="category-tab ${index === 0 ? "active" : ""}" data-category="${category}">${category}</button>`).join("")}</div><div class="menu-list">${renderMenu(menuItems)}</div></section>`,
+    <section class="section menu-section page-menu" id="menu"><div class="section-head"><div><p class="eyebrow">The full menu</p><h2>What are you<br>having?</h2></div><div><p class="section-lead">Live availability and final pricing are confirmed at secure checkout.</p><span class="prototype-note"><span>✓</span> Preview menu · final details confirmed at checkout</span></div></div><div class="menu-browser"><label class="menu-search"><span>⌕</span><input type="search" placeholder="Search sandwiches, coffee, sides..." aria-label="Search menu"><button class="clear-search" type="button" aria-label="Clear search">×</button></label><div class="category-tabs" role="tablist">${categories.map(category => `<button class="category-tab ${menuBrowse.category === category ? "active" : ""}" data-category="${category}"><span>${category}</span><small>${categoryCount(category)}</small></button>`).join("")}</div></div><div class="menu-results-head"><strong class="menu-results-title"></strong><span class="menu-results-count"></span></div><div class="menu-list"></div><div class="menu-empty" hidden><h3>Nothing toasted under that name.</h3><p>Try another search or browse a category.</p><button class="btn btn-outline reset-menu">Show popular items</button></div></section>`,
   catering: `
     <section class="page-hero catering-page-hero"><div><p class="eyebrow">Office catering · San Antonio</p><h1>Feed the whole floor.</h1><p>Fresh, crowd-friendly lunches for team meetings, client days, trainings, and the days nobody remembered to pack lunch.</p><div class="hero-actions"><a class="btn btn-orange" href="${PHONE_URL}">Call about catering</a><a class="btn btn-quiet" href="${CONTACT_URL}" target="_blank" rel="noopener">Send an inquiry <span>→</span></a></div></div><img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=85" alt="Catered team lunch"></section>
     <section class="section catering-detail"><div class="section-head"><div><p class="eyebrow">Made for meetings</p><h2>Simple to order.<br>Easy to serve.</h2></div><p class="section-lead">Tell us your headcount, timing, and what the room needs. We'll help shape a practical spread for your workday.</p></div><div class="service-grid"><article><span>01</span><h3>Sandwich trays</h3><p>A shareable mix of Toasted favorites, cut and ready for the conference table.</p></article><article><span>02</span><h3>Boxed lunches</h3><p>Individual lunches that make headcounts, dietary needs, and cleanup straightforward.</p></article><article><span>03</span><h3>Breakfast & coffee</h3><p>A warm start for early meetings, training days, and morning teams.</p></article></div></section>
@@ -121,6 +122,36 @@ function loadCart() {
   try { return JSON.parse(localStorage.getItem("toasted-cart")) || []; } catch { return []; }
 }
 function saveCart() { localStorage.setItem("toasted-cart", JSON.stringify(cart)); }
+function categoryCount(category) {
+  return category === "Popular" ? popularIds.length : menuItems.filter(item => item.category === category).length;
+}
+function loadMenuBrowse() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem("toasted-menu-browse"));
+    return { category: categories.includes(saved?.category) ? saved.category : "Popular", search: saved?.search || "" };
+  } catch {
+    return { category: "Popular", search: "" };
+  }
+}
+function saveMenuBrowse() { sessionStorage.setItem("toasted-menu-browse", JSON.stringify(menuBrowse)); }
+function getVisibleMenuItems() {
+  const query = menuBrowse.search.trim().toLowerCase();
+  if (query) return menuItems.filter(item => `${item.name} ${item.category} ${item.desc} ${item.flags.join(" ")}`.toLowerCase().includes(query));
+  return menuBrowse.category === "Popular" ? popularIds.map(id => menuItems.find(item => item.id === id)).filter(Boolean) : menuItems.filter(item => item.category === menuBrowse.category);
+}
+function renderMenuBrowse() {
+  if (page !== "menu") return;
+  const items = getVisibleMenuItems();
+  document.querySelector(".menu-list").innerHTML = renderMenu(items);
+  document.querySelector(".menu-list").hidden = !items.length;
+  document.querySelector(".menu-empty").hidden = Boolean(items.length);
+  document.querySelector(".menu-results-title").textContent = menuBrowse.search ? `Results for “${menuBrowse.search}”` : menuBrowse.category;
+  document.querySelector(".menu-results-count").textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
+  document.querySelector(".menu-search input").value = menuBrowse.search;
+  document.querySelector(".clear-search").classList.toggle("visible", Boolean(menuBrowse.search));
+  document.querySelectorAll(".category-tab").forEach(tab => tab.classList.toggle("active", tab.dataset.category === menuBrowse.category && !menuBrowse.search));
+  bindItemTriggers();
+}
 function closePanels() { document.querySelectorAll(".overlay").forEach(overlay => overlay.classList.remove("open")); document.body.classList.remove("panel-open"); }
 function notify(message) { const toast = document.querySelector(".toast"); toast.textContent = message; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2200); }
 
@@ -131,6 +162,27 @@ document.querySelector(".mobile-order-bar").addEventListener("click", () => cart
 document.querySelectorAll(".close-modal, .close-cart").forEach(button => button.addEventListener("click", closePanels));
 document.querySelectorAll(".overlay").forEach(overlay => overlay.addEventListener("click", event => { if (event.target === overlay) closePanels(); }));
 document.addEventListener("keydown", event => { if (event.key === "Escape") closePanels(); });
-document.querySelectorAll(".category-tab").forEach(tab => tab.addEventListener("click", () => { document.querySelectorAll(".category-tab").forEach(item => item.classList.remove("active")); tab.classList.add("active"); document.querySelector(".menu-list").innerHTML = renderMenu(tab.dataset.category === "All" ? menuItems : menuItems.filter(item => item.category === tab.dataset.category)); bindItemTriggers(); }));
+document.querySelectorAll(".category-tab").forEach(tab => tab.addEventListener("click", () => {
+  menuBrowse = { category: tab.dataset.category, search: "" };
+  saveMenuBrowse();
+  renderMenuBrowse();
+}));
+document.querySelector(".menu-search input")?.addEventListener("input", event => {
+  menuBrowse.search = event.target.value;
+  saveMenuBrowse();
+  renderMenuBrowse();
+});
+document.querySelector(".clear-search")?.addEventListener("click", () => {
+  menuBrowse.search = "";
+  saveMenuBrowse();
+  renderMenuBrowse();
+  document.querySelector(".menu-search input").focus();
+});
+document.querySelector(".reset-menu")?.addEventListener("click", () => {
+  menuBrowse = { category: "Popular", search: "" };
+  saveMenuBrowse();
+  renderMenuBrowse();
+});
 bindItemTriggers();
+renderMenuBrowse();
 updateCart();
