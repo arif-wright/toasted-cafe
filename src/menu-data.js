@@ -1,6 +1,7 @@
 export const categories = [
   "All",
   "Hot Sandwiches",
+  "Cold Sandwiches",
   "Burgers & Wraps",
   "Salads & Sides",
   "Coffee & Drinks",
@@ -46,13 +47,59 @@ const drinkGroup = {
 
 const sandwichModifiers = [sideGroup, chipGroup, drinkGroup];
 
+const dressingGroup = {
+  id: "dressing",
+  name: "Choose your dressing",
+  required: true,
+  options: [
+    { id: "ranch", name: "Ranch", price: 0 },
+    { id: "caesar", name: "Caesar", price: 0 },
+    { id: "chipotle-ranch", name: "Chipotle ranch", price: 0 },
+    { id: "vinaigrette", name: "Vinaigrette", price: 0 }
+  ]
+};
+
+const tenderSauceGroup = {
+  id: "sauce",
+  name: "Choose your sauce",
+  required: true,
+  options: [
+    { id: "ranch", name: "Ranch", price: 0 },
+    { id: "bbq", name: "Barbecue", price: 0 },
+    { id: "spicy-mayo", name: "Spicy house mayo", price: 0 }
+  ]
+};
+
+const mayoGroup = {
+  id: "mayo",
+  name: "Choose your house mayo",
+  required: true,
+  options: [
+    { id: "regular", name: "Regular house mayo", price: 0 },
+    { id: "spicy", name: "Spicy house mayo", price: 0 }
+  ]
+};
+
+const burgerExtrasGroup = {
+  id: "burger-extra",
+  name: "Add to your burger",
+  required: false,
+  options: [
+    { id: "none", name: "No extras", price: 0 },
+    { id: "cheese", name: "Cheese", price: 1 },
+    { id: "double", name: "Double meat", price: 2 },
+    { id: "bacon", name: "Bacon", price: 1.25 },
+    { id: "avocado", name: "Avocado", price: 1.25 }
+  ]
+};
+
 export const menuItems = [
   {
     id: "classic-cheesesteak",
     category: "Hot Sandwiches",
     name: "Classic Cheesesteak",
-    price: 13.95,
-    desc: "Shaved beef, grilled onions and peppers, and melted provolone on a toasted roll.",
+    price: 13,
+    desc: "Grilled steak, mayo, melted cheese, and sautéed onions and peppers on a toasted roll.",
     flags: ["customer favorite"],
     image: "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
@@ -61,28 +108,48 @@ export const menuItems = [
     id: "banh-mi-chicken",
     category: "Hot Sandwiches",
     name: "Banh Mi Chicken",
-    price: 13.5,
-    desc: "Marinated chicken, crisp vegetables, cilantro, jalapeño, and house sauce.",
+    price: 11,
+    desc: "Chicken, house aioli, pickled red onion, cucumber, carrot, cilantro, and tomato on a French roll.",
     flags: ["big flavor"],
     image: "https://images.unsplash.com/photo-1600454309261-3dc9b7597637?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "banh-mi-pork-belly",
+    category: "Hot Sandwiches",
+    name: "Banh Mi Pork Belly",
+    price: 14,
+    desc: "Pork belly, house aioli, pickled red onion, cucumber, carrot, cilantro, and tomato on a French roll.",
+    flags: ["bold favorite"],
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "banh-mi-steak",
+    category: "Hot Sandwiches",
+    name: "Banh Mi Steak",
+    price: 12,
+    desc: "Steak, house aioli, pickled red onion, cucumber, carrot, cilantro, and tomato on a French roll.",
+    flags: [],
+    image: "https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
   },
   {
     id: "fried-chicken",
     category: "Hot Sandwiches",
     name: "Fried Chicken Sandwich",
-    price: 13.75,
-    desc: "Crispy fried chicken with fresh toppings and Toasted house sauce.",
+    price: 9.5,
+    desc: "Crispy fried chicken breast, Swiss cheese, pickles, and your choice of regular or spicy house mayo.",
     flags: ["customer favorite"],
     image: "https://images.unsplash.com/photo-1615297928064-24977384d0da?auto=format&fit=crop&w=900&q=85",
-    modifiers: sandwichModifiers
+    modifiers: [mayoGroup, ...sandwichModifiers]
   },
   {
     id: "avocado-chicken",
     category: "Hot Sandwiches",
     name: "Avocado Chicken",
-    price: 13.5,
-    desc: "Grilled chicken, onions, peppers, lettuce, tomato, cilantro, and fresh avocado.",
+    price: 11,
+    desc: "Grilled chicken, mayo, grilled onions, peppers, lettuce, tomato, cilantro, and fresh avocado.",
     flags: [],
     image: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
@@ -91,36 +158,141 @@ export const menuItems = [
     id: "american-burger",
     category: "Burgers & Wraps",
     name: "American Burger",
-    price: 12.95,
-    desc: "A Toasted take on the classic American burger, hot off the grill.",
+    price: 10,
+    desc: "Beef patty with mayo, lettuce, tomato, pickles, and onion.",
     flags: ["customer favorite"],
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85",
-    modifiers: sandwichModifiers
+    modifiers: [burgerExtrasGroup, ...sandwichModifiers]
   },
   {
     id: "el-camino",
     category: "Burgers & Wraps",
-    name: "El Camino Chicken Wrap",
-    price: 12.75,
-    desc: "Grilled chicken and fresh vegetables wrapped for an easy desk-side lunch.",
+    name: "El Camino Chicken",
+    price: 11,
+    desc: "Cilantro-lime marinated grilled chicken with smoky chipotle mayo, lettuce, tomato, avocado, and onions on a toasted bun.",
     flags: [],
     image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
   },
   {
-    id: "house-salad",
+    id: "pork-belly-sandwich",
+    category: "Hot Sandwiches",
+    name: "Pork Belly Sandwich",
+    price: 14,
+    desc: "Crispy pork belly with lettuce, tomato, onions, on a soft bun.",
+    flags: ["hearty"],
+    image: "https://images.unsplash.com/photo-1619096252214-ef06c45683e3?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "chicken-tenders",
+    category: "Hot Sandwiches",
+    name: "Chicken Tenders",
+    price: 9.5,
+    desc: "Hand-breaded, golden-fried chicken tenders served with your choice of sauce and side.",
+    flags: [],
+    image: "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=900&q=85",
+    modifiers: [tenderSauceGroup, sideGroup, chipGroup, drinkGroup]
+  },
+  {
+    id: "ham-swiss",
+    category: "Cold Sandwiches",
+    name: "Ham & Swiss",
+    price: 10,
+    desc: "Ham, Swiss, green leaf lettuce, tomatoes, cucumber, red onion, cilantro, and house-made mayonnaise.",
+    flags: [],
+    image: "https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "blt",
+    category: "Cold Sandwiches",
+    name: "BLT",
+    price: 11,
+    desc: "Thick-cut smoked bacon, green leaf lettuce, Roma tomato, and house aioli.",
+    flags: ["classic"],
+    image: "https://images.unsplash.com/photo-1619096252214-ef06c45683e3?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "roast-chicken",
+    category: "Cold Sandwiches",
+    name: "Roast Chicken",
+    price: 10,
+    desc: "Roasted chicken, green leaf lettuce, tomatoes, cucumber, red onion, cilantro, and house-made mayonnaise.",
+    flags: [],
+    image: "https://images.unsplash.com/photo-1539252554453-80ab65ce3586?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "turkey-swiss",
+    category: "Cold Sandwiches",
+    name: "Turkey & Swiss",
+    price: 10,
+    desc: "Turkey, Swiss, green leaf lettuce, cucumber, tomatoes, red onion, cilantro, and house-made mayonnaise.",
+    flags: [],
+    image: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "california-club",
+    category: "Cold Sandwiches",
+    name: "California Club",
+    price: 11,
+    desc: "Turkey breast, bacon, avocado, lettuce, tomato, cucumber, onion, and mayo on wheat bread.",
+    flags: ["loaded"],
+    image: "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "veggie-wrap",
+    category: "Burgers & Wraps",
+    name: "Veggie Wrap",
+    price: 9,
+    desc: "Lettuce, cucumber, tomato, pickled carrots, red onion, avocado, seasonal hummus, and vinaigrette.",
+    flags: ["vegetarian"],
+    image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=85",
+    modifiers: sandwichModifiers
+  },
+  {
+    id: "chicken-caesar-salad",
     category: "Salads & Sides",
-    name: "Toasted House Salad",
-    price: 10.5,
-    desc: "Fresh greens, vegetables, and your choice of dressing. Add chicken if you like.",
+    name: "Chicken Caesar Salad",
+    price: 11,
+    desc: "Crisp romaine topped with grilled chicken, house-made Caesar dressing, Parmesan cheese, and seasoned croutons.",
     flags: ["lighter lunch"],
     image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=900&q=85",
-    modifiers: [{
-      id: "protein",
-      name: "Add protein",
-      required: false,
-      options: [{ id: "none", name: "No protein", price: 0 }, { id: "chicken", name: "Grilled chicken", price: 4 }]
-    }, drinkGroup]
+    modifiers: [drinkGroup]
+  },
+  {
+    id: "cobb-salad",
+    category: "Salads & Sides",
+    name: "Cobb Salad",
+    price: 11,
+    desc: "Chopped romaine, grilled chicken, bacon, avocado, tomato, carrots, onions, cucumbers, hard-boiled egg, and blue cheese.",
+    flags: ["hearty salad"],
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=85",
+    modifiers: [dressingGroup, drinkGroup]
+  },
+  {
+    id: "chef-salad",
+    category: "Salads & Sides",
+    name: "Chef Salad",
+    price: 11,
+    desc: "Mixed greens with ham, turkey, Swiss, tomato, cucumber, carrots, onions, and hard-boiled egg.",
+    flags: [],
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85",
+    modifiers: [dressingGroup, drinkGroup]
+  },
+  {
+    id: "fajita-salad",
+    category: "Salads & Sides",
+    name: "Fajita Salad",
+    price: 11,
+    desc: "Seasoned grilled chicken over fresh greens with bell peppers, onions, tomato, avocado, carrots, cucumbers, cheese, and tortilla strips.",
+    flags: ["chipotle ranch"],
+    image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=900&q=85",
+    modifiers: [drinkGroup]
   },
   {
     id: "loaded-tots",
@@ -131,6 +303,54 @@ export const menuItems = [
     flags: ["shareable"],
     image: "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=900&q=85",
     modifiers: []
+  },
+  {
+    id: "fries-or-tots",
+    category: "Salads & Sides",
+    name: "French Fries or Tots",
+    price: 4,
+    desc: "Golden fries or crispy tater tots in your choice of size.",
+    flags: ["side"],
+    image: "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=900&q=85",
+    modifiers: [
+      {
+        id: "potato",
+        name: "Choose one",
+        required: true,
+        options: [{ id: "fries", name: "French fries", price: 0 }, { id: "tots", name: "Tater tots", price: 0 }]
+      },
+      {
+        id: "side-size",
+        name: "Choose a size",
+        required: true,
+        options: [{ id: "small", name: "Small", price: 0 }, { id: "large", name: "Large", price: 3 }]
+      }
+    ]
+  },
+  {
+    id: "side-salad",
+    category: "Salads & Sides",
+    name: "Side Salad",
+    price: 4,
+    desc: "A fresh side salad with your choice of dressing.",
+    flags: ["side"],
+    image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=900&q=85",
+    modifiers: [dressingGroup]
+  },
+  {
+    id: "chips",
+    category: "Salads & Sides",
+    name: "Chips",
+    price: 2,
+    desc: "A bag of chips in your favorite flavor.",
+    flags: ["side"],
+    image: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=900&q=85",
+    modifiers: [{
+      id: "chip-flavor",
+      name: "Pick a chip flavor",
+      required: true,
+      options: chipGroup.options
+    }]
   },
   {
     id: "mediterranean-coffee",
