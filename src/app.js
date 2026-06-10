@@ -18,7 +18,7 @@ document.querySelector("#app").innerHTML = `
     <div class="header-actions">
       <a class="bag phone-header" href="${PHONE_URL}" aria-label="Call Toasted Cafe">Call</a>
       <button class="bag-button" aria-label="Open your bag">Bag <span class="bag-count">0</span></button>
-      <button class="btn btn-orange desktop-order browse-menu">Start order</button>
+      <button class="btn btn-orange desktop-order browse-menu">Order lunch</button>
       <button class="menu-toggle" aria-label="Open menu"></button>
     </div>
   </header>
@@ -30,7 +30,7 @@ document.querySelector("#app").innerHTML = `
         <p class="eyebrow">Sandwiches · burgers · wraps · coffee</p>
         <h1>Your lunch break, <span class="accent">toasted.</span></h1>
         <p>Build your order here, customize every side, then pick it up fast from the Northwest Tower basement.</p>
-        <div class="hero-actions"><button class="btn btn-orange browse-menu">Build your lunch</button><a class="btn btn-outline" href="#menu">See the menu</a></div>
+        <div class="hero-actions"><button class="btn btn-orange browse-menu">Order lunch</button><a class="btn btn-quiet" href="#locations">Pickup details <span>→</span></a></div>
         <div class="hero-proof"><strong>Open weekdays from 7am</strong><span>Basement level · Northwest Tower</span></div>
       </div>
       <div class="hero-media"><img src="https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=1400&q=90" alt="Fresh stacked lunch sandwich"><div class="hero-badge">Made fresh for your lunch break</div></div>
@@ -39,11 +39,11 @@ document.querySelector("#app").innerHTML = `
     <section class="quick-order">
       <div class="quick-title"><span>01</span><div><strong>Lunch without the guesswork.</strong><small>Choose your sandwich, side, drink, and every little detail.</small></div></div>
       <div class="order-options"><div class="order-option active"><span>+</span><span><b>Build it your way</b><small>Customize on the Toasted site</small></span></div><div class="order-option"><span>↗</span><span><b>Secure checkout</b><small>ChowNow handles the final step</small></span></div></div>
-      <button class="btn btn-light browse-menu">Browse the menu</button>
+      <button class="btn btn-light browse-menu">Start your order</button>
     </section>
 
     <section class="section" id="favorites">
-      <div class="section-head"><div><p class="eyebrow">The lunch lineup</p><h2>Start with the<br>heavy hitters.</h2></div><p class="section-lead">Tap an item to choose your side, add a drink, and make it yours without leaving Toasted.</p></div>
+      <div class="section-head"><div><p class="eyebrow">Most ordered</p><h2>Start with the<br>heavy hitters.</h2></div><p class="section-lead">Three Toasted favorites, ready for your choice of side and whatever the afternoon calls for.</p></div>
       <div class="favorite-grid">${renderFeatured(featured)}</div>
     </section>
 
@@ -53,7 +53,7 @@ document.querySelector("#app").innerHTML = `
     </section>
 
     <section class="section menu-section" id="menu">
-      <div class="section-head"><div><p class="eyebrow">Build your order</p><h2>What are you<br>having?</h2></div><div><p class="section-lead">Browse and customize here. Prices shown are mockup data; ChowNow confirms the live menu and total at secure checkout.</p><span class="prototype-note">Prototype menu · final availability confirmed at checkout</span></div></div>
+      <div class="section-head"><div><p class="eyebrow">Made your way</p><h2>What are you<br>having?</h2></div><div><p class="section-lead">Choose a favorite, pick your side, and add the details. Live availability and final pricing are confirmed at secure checkout.</p><span class="prototype-note"><span>✓</span> Preview menu · final details confirmed at checkout</span></div></div>
       <div class="category-tabs" role="tablist">${categories.map((category, index) => `<button class="category-tab ${index === 0 ? "active" : ""}" data-category="${category}">${category}</button>`).join("")}</div>
       <div class="menu-list">${renderMenu(menuItems)}</div>
     </section>
@@ -70,7 +70,7 @@ document.querySelector("#app").innerHTML = `
 
   <footer class="footer"><div><a href="#home" class="logo"><img class="logo-image footer-logo" src="/toasted-cafe-logo.png" alt="Toasted Cafe"></a><p>Fresh sandwiches, cheesesteaks, burgers, wraps, salads, sides, and coffee in San Antonio's Northwest Tower.</p></div><div class="footer-contact"><strong>Visit or call</strong><a href="${DIRECTIONS_URL}" target="_blank" rel="noopener">1777 NE Loop 410, Suite G20<br>San Antonio, TX 78217</a><a href="${PHONE_URL}">(210) 254-9159</a></div><div class="footer-links"><a href="#menu">Order menu</a><a href="#catering">Office catering</a><a href="#locations">Directions</a><a href="https://toastedcafesa.com/contact" target="_blank" rel="noopener">Contact</a></div><div class="footer-bottom">© 2026 Toasted Cafe · Monday–Thursday 7am–3pm · Friday 7am–2:30pm</div></footer>
 
-  <button class="btn btn-orange mobile-order-bar browse-menu"><span>Browse menu</span><span>Build your lunch</span></button>
+  <button class="btn btn-orange mobile-order-bar browse-menu"><span>Order lunch</span><span>View menu →</span></button>
   <div class="overlay modal-overlay" aria-hidden="true"><section class="item-modal" role="dialog" aria-modal="true"><button class="panel-close close-modal" aria-label="Close">×</button><div class="item-modal-content"></div></section></div>
   <div class="overlay cart-overlay" aria-hidden="true"><aside class="cart-drawer" role="dialog" aria-modal="true"><div class="cart-header"><div><span class="panel-kicker">Your pickup order</span><h2>Toasted bag</h2></div><button class="panel-close close-cart" aria-label="Close">×</button></div><div class="cart-lines"></div><div class="cart-footer"></div></aside></div>
   <div class="toast" role="status"></div>
@@ -84,10 +84,11 @@ function openItem(itemId) {
   activeItem = menuItems.find(item => item.id === itemId);
   quantity = 1;
   const content = document.querySelector(".item-modal-content");
+  content.className = `item-modal-content${activeItem.image ? "" : " no-image"}`;
   content.innerHTML = `
     ${activeItem.image ? `<div class="modal-image"><img src="${activeItem.image}" alt="${activeItem.name}"><span>${activeItem.category}</span></div>` : ""}
-    <div class="modal-copy"><span class="panel-kicker">${activeItem.category}</span><h2>${activeItem.name}</h2><p>${activeItem.desc}</p>
-      <form class="item-form">${activeItem.modifiers.map(group => renderModifierGroup(group, group.options[0]?.id)).join("")}
+    <div class="modal-copy"><span class="panel-kicker">${activeItem.category}</span><div class="modal-title-row"><h2>${activeItem.name}</h2><strong>From ${money(activeItem.price)}</strong></div><p>${activeItem.desc}</p>
+      <form class="item-form">${activeItem.modifiers.map(group => renderModifierGroup(group, group.required ? null : group.options[0]?.id)).join("")}
         <label class="special-label">Special instructions <span>Optional</span><textarea name="notes" placeholder="Sauce on the side, no onions..."></textarea></label>
         <div class="modal-action"><div class="quantity-control"><button type="button" class="item-qty" data-delta="-1">−</button><span class="item-qty-value">1</span><button type="button" class="item-qty" data-delta="1">+</button></div><button class="btn btn-orange add-to-bag" type="submit"><span>Add to bag</span><strong>${money(activeItem.price)}</strong></button></div>
       </form>
@@ -156,12 +157,13 @@ function updateCart() {
   document.querySelector(".bag-count").textContent = count;
   document.querySelector(".cart-lines").innerHTML = cart.length ? cart.map(renderCartLine).join("") : `<div class="empty-cart"><img src="/toasted-cafe-logo.png" alt=""><h3>Your bag is hungry.</h3><p>Build a lunch from the Toasted menu.</p><button class="btn btn-orange close-cart browse-menu">Browse menu</button></div>`;
   document.querySelector(".cart-footer").innerHTML = cart.length ? `
-    <div class="cart-totals"><span>Prototype subtotal</span><strong>${money(subtotal)}</strong></div>
-    <p class="handoff-note"><strong>One last secure step.</strong> This prototype opens ChowNow to confirm your items, live pricing, pickup time, and payment. A live integration would pass this bag automatically.</p>
-    <a class="btn btn-orange checkout-button" href="${ORDER_URL}" target="_blank" rel="noopener"><span>Proceed to secure checkout</span><span>↗</span></a>` : "";
+    <div class="pickup-summary"><span>Pickup from</span><strong>Northwest Tower · Suite G20</strong></div>
+    <div class="cart-totals"><span>Estimated subtotal</span><strong>${money(subtotal)}</strong></div>
+    <p class="handoff-note"><strong>Secure checkout with ChowNow</strong>Live availability, final pricing, pickup time, and payment are confirmed in the next step.</p>
+    <a class="btn btn-orange checkout-button" href="${ORDER_URL}" target="_blank" rel="noopener"><span>Continue to secure checkout</span><span>↗</span></a>` : "";
   const mobileBar = document.querySelector(".mobile-order-bar");
   mobileBar.classList.toggle("has-items", count > 0);
-  mobileBar.innerHTML = count ? `<span>View bag · ${count} item${count === 1 ? "" : "s"}</span><strong>${money(subtotal)}</strong>` : `<span>Browse menu</span><span>Build your lunch</span>`;
+  mobileBar.innerHTML = count ? `<span>View bag · ${count} item${count === 1 ? "" : "s"}</span><strong>${money(subtotal)}</strong>` : `<span>Order lunch</span><span>View menu →</span>`;
   bindCartEvents();
 }
 
