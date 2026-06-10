@@ -84,6 +84,7 @@ export const menuItems = [
     price: 13.5,
     desc: "Grilled chicken, onions, peppers, lettuce, tomato, cilantro, and fresh avocado.",
     flags: [],
+    image: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
   },
   {
@@ -93,6 +94,7 @@ export const menuItems = [
     price: 12.95,
     desc: "A Toasted take on the classic American burger, hot off the grill.",
     flags: ["customer favorite"],
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
   },
   {
@@ -102,6 +104,7 @@ export const menuItems = [
     price: 12.75,
     desc: "Grilled chicken and fresh vegetables wrapped for an easy desk-side lunch.",
     flags: [],
+    image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=85",
     modifiers: sandwichModifiers
   },
   {
@@ -111,6 +114,7 @@ export const menuItems = [
     price: 10.5,
     desc: "Fresh greens, vegetables, and your choice of dressing. Add chicken if you like.",
     flags: ["lighter lunch"],
+    image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=900&q=85",
     modifiers: [{
       id: "protein",
       name: "Add protein",
@@ -125,6 +129,7 @@ export const menuItems = [
     price: 7.5,
     desc: "Crispy tots loaded Toasted-style. Built for sharing, if you feel generous.",
     flags: ["shareable"],
+    image: "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=900&q=85",
     modifiers: []
   },
   {
@@ -134,6 +139,7 @@ export const menuItems = [
     price: 4.25,
     desc: "A distinctive Toasted Cafe coffee favorite, served hot.",
     flags: [],
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=85",
     modifiers: [{
       id: "size",
       name: "Choose a size",
@@ -148,6 +154,7 @@ export const menuItems = [
     price: 2.75,
     desc: "Fresh brewed and ready to round out your lunch.",
     flags: [],
+    image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=85",
     modifiers: [{
       id: "tea",
       name: "Choose your tea",
@@ -162,6 +169,7 @@ export const menuItems = [
     price: 7.95,
     desc: "A quick San Antonio morning favorite, served during breakfast hours.",
     flags: ["morning"],
+    image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=900&q=85",
     modifiers: []
   },
   {
@@ -171,6 +179,7 @@ export const menuItems = [
     price: 8.5,
     desc: "A warm, flaky start to the workday.",
     flags: ["morning"],
+    image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=85",
     modifiers: []
   }
 ];
